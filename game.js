@@ -33,8 +33,8 @@ window.onload = function () {
   snake.speedY = 0;
   snake.direction = "right";
 
-  let initialApplePosX = randomTwentyInterval(0, 800);
-  let initialApplePosY = randomTwentyInterval(0, 800);
+  let initialApplePosX = randomTwentyInterval(canvas.width);
+  let initialApplePosY = randomTwentyInterval(canvas.height);
 
   apple.posX = initialApplePosX;
   apple.posY = initialApplePosY;
@@ -48,6 +48,12 @@ window.onload = function () {
     moveEverything();
   }, 1000 / framesPerSecond);
 };
+
+function drawEverything() {
+  drawBoard();
+  drawSnake();
+  drawApple();
+}
 
 function drawBoard() {
   drawRect(0, 0, canvas.width, canvas.height, "black");
@@ -85,21 +91,18 @@ function drawSnake() {
   // }
 }
 
-function drawEverything() {
-  drawBoard();
-  drawSnake();
-  drawApple();
-}
-
 function drawApple() {
-  if (snake.posX < apple.posX && snake.posY > apple.posY) {
-    apple.posX = randomTwentyInterval(0, canvas.width);
-    apple.posY = randomTwentyInterval(0, canvas.height);
+  if (snake.posX === apple.posX && snake.posY === apple.posY) {
+    apple.posX = randomTwentyInterval(canvas.width);
+    apple.posY = randomTwentyInterval(canvas.height);
+
     // increase snake length and add body part
     snake.snakeLength++;
     // addBody();
   }
   // apple is inheriting color from the snake rect since drawApple() is called after drawSnake()
+  console.log(apple.posX);
+  console.log(apple.posY);
   canvas.fillStyle = "yellow";
   canvasContext.fillRect(apple.posX, apple.posY, 20, 20);
 }
@@ -162,10 +165,8 @@ function moveSnake(e) {
 }
 
 // generates random interval of 20 between 0 and canvas width
-function randomTwentyInterval(min, max) {
-  let minimum = Math.ceil(min);
-  let maximum = Math.floor(max);
-  return Math.floor(Math.random() * (maximum - minimum) + minimum);
+function randomTwentyInterval(max) {
+  return Math.floor(Math.random() * (max / 2)) * 20; // multiply by 20 to get interval of 20
 }
 
 function resetSnake() {
