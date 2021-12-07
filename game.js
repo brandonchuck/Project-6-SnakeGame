@@ -2,52 +2,44 @@
 let canvas;
 let canvasContext;
 
-let snakeLength;
-
-let snakePositionX; // X position of the snake head
-let snakePositionY; // Y position of the snake head
-
-let applePositionX;
-let applePositionY;
-
-let direction;
-
-// change sign based on arrowkey input
-let speedX; // + means right arrow; - means left arrow
-let speedY; // + means down arrow; - means up arrow
-
-
 let gameOver = false;
 // 1. Draw board
 // 2. Draw Grid
+
+// apple object with coordinates
+let apple = {
+  posX: null,
+  posY: null,
+}
+
+// snake object with its properties
+let snake = {
+  posX: null,
+  posY: null,
+  speedX: null,
+  speedY: null,
+  direction: null,
+  snakeLength: 1
+}
 
 
 window.onload = function () {
   canvas = document.getElementById("canvas");
   canvasContext = canvas.getContext("2d");
 
-  direction = "right";
-  // set apple position on load
-  // applePositionX = (Math.random() * canvas.width) / canvas.width;
-  // applePositionY
-
-  let snake = {
-    posX: canvas.width / 2,
-    posY: canvas.height / 2,
-    deltaX: 20,
-    deltaY: 0
-  }
-
   // Initial snake position and speed
-  snakePositionX = canvas.width / 2;
-  snakePositionY = canvas.height / 2;
-  speedX = 20;
-  speedY = 0;
+  snake.posX = canvas.width / 2;
+  snake.posY = canvas.height / 2;
+  snake.speedX = 20;
+  snake.speedY = 0;
+  snake.direction = "right";
 
-  let framesPerSecond = 5;
+  let framesPerSecond = 10;
 
-  // listen for keypress on load
   window.addEventListener("keydown", moveSnake);
+
+  // generate random apple coordinates
+  generateApple();
 
   setInterval(() => {
     drawBoard();
@@ -82,87 +74,97 @@ function drawRect(leftX, topY, width, height, color) {
 }
 
 function drawSnake() {
-  canvasContext.fillStyle = "red";
-  canvasContext.fillRect(snakePositionX, snakePositionY, 20, 20);
+  if (snake.snakeLength === 1){
+    canvasContext.fillStyle = "red";
+    canvasContext.fillRect(snake.posX, snake.posY, 20, 20);
+  } 
+  // If body part then draw green square -- incomplete logic
+  else {
+    canvasContext.fillStyle = "green";
+  }
+  
 }
 
-
-// call this function every second w/ updated x and y positions
+// update x and y positions
 function moveEverything(){
   // also need to check if snake head is same position as the apple
-  if (snakePositionY >= canvas.height || snakePositionY <= 0) {
+  if (snake.posY >= canvas.height || snake.posY <= 0) {
     alert("game over!");
-    snakePositionX = canvas.width / 2;
-    snakePositionY = canvas.height / 2;
-    speedX = 20;
-    speedY = 0;
+    resetSnake();
     gameOver = true;
     return;
   }
 
-  if (snakePositionX >= canvas.width || snakePositionX <= 0) {
+  if (snake.posX >= canvas.width || snake.posX <= 0) {
     alert("game over!");
-    snakePositionX = canvas.width / 2;
-    snakePositionY = canvas.height / 2;
-    speedX = 20;
-    speedY = 0;
+    resetSnake();
     gameOver = true;
     return;
   }
 
-  snakePositionX += speedX;
-  snakePositionY += speedY;
+  // update snake position
+  snake.posX += snake.speedX;
+  snake.posY += snake.speedY;
 }
 
 // Snake movement
 function moveSnake(e) {
 
-  // UP
-  if (e.keyCode == 38 && direction !== "down") {
-    console.log("Current Direction: " + direction);
-    console.log("Went Up");
-    speedX = 0;
-    speedY = 20;
-    speedY = -speedY;
-    direction = "up";
+  // UP -- prevents movement in opposite directions
+  if (e.keyCode == 38 && snake.direction !== "down") {
+    snake.speedX = 0;
+    snake.speedY = -20;
+    snake.direction = "up";
+    console.log("Current Direction: " + snake.direction);
   }
 
   // DOWN
-  if (e.keyCode == 40 && direction !== "up") {
-    console.log("Current Direction: " + direction);
-    console.log("Went Down");
-    speedX = 0;
-    speedY = 20;
-    speedY = -speedY;
-    direction = "down";
+  else if (e.keyCode == 40 && snake.direction !== "up") {
+    snake.speedX = 0;
+    snake.speedY = 20;
+    snake.direction = "down";
+    console.log("Current Direction: " + snake.direction);
   }
   
   // RIGHT
-  if (e.keyCode === 39 && direction !== "left") {
-    console.log("Current Direction: " + direction);
-    console.log("Went Right");
-    speedX = 20;
-    speedX = -speedX;
-    speedY = 0;
-    direction = "right";
+  else if (e.keyCode === 39 && snake.direction !== "left") {
+    snake.speedX = 20;
+    snake.speedY = 0;
+    snake.direction = "right";
+    console.log("Current Direction: " + snake.direction);
   }
 
   // LEFT
-  if (e.keyCode === 37 && direction !== "right") {
-    console.log("Current Direction: " + direction);
-    console.log("Went Left");
-    speedX = 20;
-    speedX = -speedX;
-    speedY = 0;
-    direction = "left";
+  else if (e.keyCode === 37 && snake.direction !== "right") {
+    snake.speedX = -20;
+    snake.speedY = 0;
+    snake.direction = "left";
+    console.log("Current Direction: " + snake.direction);
   }
 
 }
 
 function eatApple() {
-  snakeLength++;
+  snake.snakeLength++;
 
   // relocate apple to random coordinate
 
   // increase length of snake and draw on canvas
+}
+
+function generateApple(){
+  apple.posX = randomTwentyInterval();
+  apple.posY = randomTwentyInterval();
+}
+
+// generates random interval of 20 between 0 and canvas width
+function randomTwentyInterval(){
+  // return randomInterval;
+}
+
+function resetSnake(){
+  snake.posX = canvas.width / 2;
+  snake.posY = canvas.height / 2;
+  snake.speedX = 20;
+  snake.speedY = 0;
 }
