@@ -10,7 +10,7 @@ let gameOver = false;
 let apple = {
   posX: null,
   posY: null,
-}
+};
 
 // snake object with its properties
 let snake = {
@@ -19,9 +19,8 @@ let snake = {
   speedX: null,
   speedY: null,
   direction: null,
-  snakeLength: 1
-}
-
+  snakeLength: 1,
+};
 
 window.onload = function () {
   canvas = document.getElementById("canvas");
@@ -34,16 +33,18 @@ window.onload = function () {
   snake.speedY = 0;
   snake.direction = "right";
 
+  let initialApplePosX = randomTwentyInterval(0, 800);
+  let initialApplePosY = randomTwentyInterval(0, 800);
+
+  apple.posX = initialApplePosX;
+  apple.posY = initialApplePosY;
+
   let framesPerSecond = 10;
 
   window.addEventListener("keydown", moveSnake);
 
-  // generate random apple coordinates
-  generateApple();
-
   setInterval(() => {
-    drawBoard();
-    drawSnake();
+    drawEverything();
     moveEverything();
   }, 1000 / framesPerSecond);
 };
@@ -74,28 +75,46 @@ function drawRect(leftX, topY, width, height, color) {
 }
 
 function drawSnake() {
-  if (snake.snakeLength === 1){
+  if (snake.snakeLength === 1) {
     canvasContext.fillStyle = "red";
     canvasContext.fillRect(snake.posX, snake.posY, 20, 20);
-  } 
-  // If body part then draw green square -- incomplete logic
-  else {
-    canvasContext.fillStyle = "green";
   }
-  
+  // If body part then draw green square -- incomplete logic
+  // else {
+  //   canvasContext.fillStyle = "green";
+  // }
+}
+
+function drawEverything() {
+  drawBoard();
+  drawSnake();
+  drawApple();
+}
+
+function drawApple() {
+  if (snake.posX < apple.posX && snake.posY > apple.posY) {
+    apple.posX = randomTwentyInterval(0, canvas.width);
+    apple.posY = randomTwentyInterval(0, canvas.height);
+    // increase snake length and add body part
+    snake.snakeLength++;
+    // addBody();
+  }
+  // apple is inheriting color from the snake rect since drawApple() is called after drawSnake()
+  canvas.fillStyle = "yellow";
+  canvasContext.fillRect(apple.posX, apple.posY, 20, 20);
 }
 
 // update x and y positions
-function moveEverything(){
+function moveEverything() {
   // also need to check if snake head is same position as the apple
-  if (snake.posY >= canvas.height || snake.posY <= 0) {
+  if (snake.posY >= canvas.height || snake.posY < 0) {
     alert("game over!");
     resetSnake();
     gameOver = true;
     return;
   }
 
-  if (snake.posX >= canvas.width || snake.posX <= 0) {
+  if (snake.posX >= canvas.width || snake.posX < 0) {
     alert("game over!");
     resetSnake();
     gameOver = true;
@@ -109,7 +128,6 @@ function moveEverything(){
 
 // Snake movement
 function moveSnake(e) {
-
   // UP -- prevents movement in opposite directions
   if (e.keyCode == 38 && snake.direction !== "down") {
     snake.speedX = 0;
@@ -125,7 +143,7 @@ function moveSnake(e) {
     snake.direction = "down";
     console.log("Current Direction: " + snake.direction);
   }
-  
+
   // RIGHT
   else if (e.keyCode === 39 && snake.direction !== "left") {
     snake.speedX = 20;
@@ -141,28 +159,16 @@ function moveSnake(e) {
     snake.direction = "left";
     console.log("Current Direction: " + snake.direction);
   }
-
-}
-
-function eatApple() {
-  snake.snakeLength++;
-
-  // relocate apple to random coordinate
-
-  // increase length of snake and draw on canvas
-}
-
-function generateApple(){
-  apple.posX = randomTwentyInterval();
-  apple.posY = randomTwentyInterval();
 }
 
 // generates random interval of 20 between 0 and canvas width
-function randomTwentyInterval(){
-  // return randomInterval;
+function randomTwentyInterval(min, max) {
+  let minimum = Math.ceil(min);
+  let maximum = Math.floor(max);
+  return Math.floor(Math.random() * (maximum - minimum) + minimum);
 }
 
-function resetSnake(){
+function resetSnake() {
   snake.posX = canvas.width / 2;
   snake.posY = canvas.height / 2;
   snake.speedX = 20;
