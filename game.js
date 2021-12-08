@@ -19,7 +19,7 @@ let snake = {
   speedX: null,
   speedY: null,
   direction: null,
-  snakeLength: 1,
+  snakeLength: 0,
 };
 
 window.onload = function () {
@@ -50,6 +50,9 @@ window.onload = function () {
 };
 
 function drawEverything() {
+  document.getElementById(
+    "scoreboard"
+  ).textContent = `Score: ${snake.snakeLength}`;
   drawBoard();
   drawSnake();
   drawApple();
@@ -81,10 +84,8 @@ function drawRect(leftX, topY, width, height, color) {
 }
 
 function drawSnake() {
-  if (snake.snakeLength === 1) {
-    canvasContext.fillStyle = "red";
-    canvasContext.fillRect(snake.posX, snake.posY, 20, 20);
-  }
+  canvasContext.fillStyle = "red";
+  canvasContext.fillRect(snake.posX, snake.posY, 20, 20);
   // If body part then draw green square -- incomplete logic
   // else {
   //   canvasContext.fillStyle = "green";
@@ -95,16 +96,15 @@ function drawApple() {
   if (snake.posX === apple.posX && snake.posY === apple.posY) {
     apple.posX = randomTwentyInterval(canvas.width);
     apple.posY = randomTwentyInterval(canvas.height);
-
+    console.log("---------- APPLE HIT----------");
+    console.log("SCORE: " + snake.snakeLength);
     // increase snake length and add body part
     snake.snakeLength++;
     // addBody();
+  } else {
+    canvas.fillStyle = "yellow";
+    canvasContext.fillRect(apple.posX, apple.posY, 20, 20);
   }
-  // apple is inheriting color from the snake rect since drawApple() is called after drawSnake()
-  console.log(apple.posX);
-  console.log(apple.posY);
-  canvas.fillStyle = "yellow";
-  canvasContext.fillRect(apple.posX, apple.posY, 20, 20);
 }
 
 // update x and y positions
@@ -112,14 +112,14 @@ function moveEverything() {
   // also need to check if snake head is same position as the apple
   if (snake.posY >= canvas.height || snake.posY < 0) {
     alert("game over!");
-    resetSnake();
+    resetGame();
     gameOver = true;
     return;
   }
 
   if (snake.posX >= canvas.width || snake.posX < 0) {
     alert("game over!");
-    resetSnake();
+    resetGame();
     gameOver = true;
     return;
   }
@@ -166,12 +166,14 @@ function moveSnake(e) {
 
 // generates random interval of 20 between 0 and canvas width
 function randomTwentyInterval(max) {
-  return Math.floor(Math.random() * (max / 2)) * 20; // multiply by 20 to get interval of 20
+  return Math.floor(Math.random() * (max / 20)) * 20; // multiply by 20 to get interval of 20
 }
 
-function resetSnake() {
+function resetGame() {
+  canvasContext.fillStyle = "red";
   snake.posX = canvas.width / 2;
   snake.posY = canvas.height / 2;
   snake.speedX = 20;
   snake.speedY = 0;
+  snake.snakeLength = 0;
 }
