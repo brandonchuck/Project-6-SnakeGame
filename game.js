@@ -20,8 +20,11 @@ let snake = {
   speedX: null,
   speedY: null,
   direction: null,
-  snakeLength: 0,
-  body: [], // this will store x and y coordinates for drawing a snake body rect
+  body: [
+    { x: 380, y: 400 },
+    { x: 360, y: 400 },
+    { x: 340, y: 400 },
+  ], // this will store x and y coordinates for drawing a snake body rect
 };
 
 window.onload = function () {
@@ -40,7 +43,12 @@ window.onload = function () {
 
   let framesPerSecond = 5;
 
-  window.addEventListener("keydown", moveSnake);
+  console.log("Initial X Position: " + snake.posX);
+  console.log("Initial Y Position: " + snake.posY);
+  console.log("Body X: " + snake.body[0].x);
+  console.log("Body Y: " + snake.body[0].y);
+
+  window.addEventListener("keydown", changeDirection);
 
   setInterval(() => {
     drawEverything();
@@ -51,7 +59,7 @@ window.onload = function () {
 function drawEverything() {
   document.getElementById(
     "scoreboard"
-  ).textContent = `Score: ${snake.snakeLength}`;
+  ).textContent = `Score: ${snake.body.length}`;
   drawBoard();
   drawSnake();
   drawApple();
@@ -83,18 +91,11 @@ function drawRect(leftX, topY, width, height, color) {
 }
 
 function drawSnake() {
-  drawRect(snake.posX, snake.posY, 20, 20, "orange");
+  drawRect(snake.posX, snake.posY, 20, 20, "orange"); // draw head
 
-  // while at least 1 body part
-  if (snake.body.length > 0) {
-    for (i = 0; i < snake.body.length; i++) {
-      if (i > 0) {
-        snake.body[i + 1].x = snake.body[i].x;
-        snake.body[i + 1].y = snake.body[i].y;
-      }
-
-      drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "green");
-    }
+  // draw each body part
+  for (let i = 0; i < snake.body.length; i++) {
+    drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "green");
   }
 }
 
@@ -103,54 +104,52 @@ function drawApple() {
     apple.posX = randomGridInterval(canvas.width);
     apple.posY = randomGridInterval(canvas.height);
     console.log("---------- APPLE HIT----------");
-    snake.snakeLength++;
-    console.log(snake.snakeLength);
+    snake.body.length++;
 
-    lastPosX = snake.posX;
-    lastPosY = snake.posY;
-
-    snake.body.push({
-      x: (lastPosX += snake.speedX),
-      y: (lastPosY += snake.speedY),
-    });
+    drawRect(apple.posX, apple.posY, 20, 20, "red");
 
     console.log(JSON.stringify(snake.body));
-  } else {
-    console.log(apple.posX, apple.posY);
-    drawRect(apple.posX, apple.posY, 20, 20, "red");
   }
 }
 
-// update x and y positions
+// update x and y positions for head and body parts
 function moveEverything() {
-  // also need to check if snake head is same position as the apple
   if (snake.posY >= canvas.height || snake.posY < 0) {
-    alert("game over!");
     resetGame();
-    gameOver = true;
-    return;
   }
 
   if (snake.posX >= canvas.width || snake.posX < 0) {
-    alert("game over!");
     resetGame();
-    gameOver = true;
-    return;
   }
 
-  // update snake position
+  // update position of each body part
+  if (snake.body) {
+    for (let i = 0; i < snake.body.length; i++) {
+      if (i === 0) {
+        snake.body[i].x = snake.posX;
+        snake.body[i].y = snake.posY;
+        // update remaining body parts
+      } else {
+        snake.body[i].x = snake.body[i - 1].x - snake.speedX;
+        snake.body[i].y = snake.body[i - 1].y - snake.speedY;
+      }
+    }
+  }
+
+  // update head position every iteration
   snake.posX += snake.speedX;
   snake.posY += snake.speedY;
+  console.log("Head Position: " + "(" + snake.posX + ", " + snake.posY + ")");
 
+  //debug
   for (i = 0; i < snake.body.length; i++) {
-    snake.body[i].x += snake.speedX;
-    snake.body[i].y += snake.speedY;
+    console.log(`Body X ${i + 1}: ${snake.body[i].x}`);
+    console.log(`Body Y ${i + 1}: ${snake.body[i].y}`);
   }
 }
 
 // Snake movement
-// Make each case a separate function and use switch?
-function moveSnake(e) {
+function changeDirection(e) {
   // UP -- prevents movement in opposite directions
   if (e.keyCode == 38 && snake.direction !== "down") {
     snake.speedX = 0;
@@ -184,21 +183,20 @@ function moveSnake(e) {
   } else {
     return;
   }
-
-  lastPosX = snake.posX;
-  lastPosY = snake.posY;
 }
 
 // generates random interval of 20 between 0 and canvas width
 function randomGridInterval(max) {
-  return Math.floor(Math.random() * (max / 20)) * GRID_UNIT; // multiply by 20 to get interval of 20
+  return Math.floor(Math.random() * (max / 20)) * GRID_UNIT;
 }
 
 function resetGame() {
+  alert("game over!");
+  gameOver = true;
   canvasContext.fillStyle = "red";
   snake.posX = canvas.width / 2;
   snake.posY = canvas.height / 2;
   snake.speedX = 20;
   snake.speedY = 0;
-  snake.snakeLength = 0;
+  return;
 }
