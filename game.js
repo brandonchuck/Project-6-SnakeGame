@@ -16,8 +16,8 @@ let snake = {
   deltaY: null,
   direction: null,
   body: [
-    { x: 400, y: 400 }, // head
-    { x: 380, y: 400 },
+    { x: 380, y: 400 }, // head
+    { x: 360, y: 400 },
     { x: 360, y: 400 },
   ], // this will store x and y coordinates for drawing a snake body rect
 };
@@ -32,7 +32,7 @@ window.onload = function () {
   apple.posX = randomGridInterval(canvas.width);
   apple.posY = randomGridInterval(canvas.height);
 
-  let framesPerSecond = 5;
+  let framesPerSecond = 10;
 
   console.log("Starting X: " + snake.body[0].x);
   console.log("Starting Y: " + snake.body[0].y);
@@ -63,7 +63,6 @@ window.onload = function () {
       snake.direction = "left";
       return;
     }
-    console.log("Current Direction: " + snake.direction);
   };
 
   setInterval(() => {
@@ -73,9 +72,9 @@ window.onload = function () {
 };
 
 function drawEverything() {
-  document.getElementById(
-    "scoreboard"
-  ).textContent = `Score: ${snake.body.length}`;
+  // document.getElementById(
+  //   "scoreboard"
+  // ).textContent = `Score: ${snake.body.length}`;
   drawBoard();
   drawSnake();
   drawApple();
@@ -107,18 +106,21 @@ function drawRect(leftX, topY, width, height, color) {
 }
 
 function drawSnake() {
-  for (i = 0; i < snake.body.length; i++) {
-    drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "orange");
+  for (let i = 0; i < snake.body.length; i++) {
+    if (i === 0) {
+      drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "orange");
+    } else {
+      drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "green");
+    }
   }
 }
 
 function drawApple() {
   if (snake.body[0].x === apple.posX && snake.body[0].y === apple.posY) {
+    // reposition apple
     apple.posX = randomGridInterval(canvas.width);
     apple.posY = randomGridInterval(canvas.height);
     drawRect(apple.posX, apple.posY, 20, 20, "red");
-    console.log("---------- APPLE HIT----------");
-    console.log(JSON.stringify(snake.body));
   }
 
   drawRect(apple.posX, apple.posY, 20, 20, "red");
@@ -135,21 +137,7 @@ function moveEverything() {
   }
 
   moveSnake();
-
-  // //debug
-  // for (i = 0; i < snake.body.length; i++) {
-  //   console.log(`Body X ${i + 1}: ${snake.body[i].x}`);
-  //   console.log(`Body Y ${i + 1}: ${snake.body[i].y}`);
-  // }
 }
-
-/*
-  1. Make copy of entire snake
-  2. Move head
-  3. loop through body parts
-  4. First body part gets head's position
-  5. Remaining body parts get the 
-*/
 
 function moveSnake() {
   switch (snake.direction) {
@@ -171,15 +159,14 @@ function moveSnake() {
       break;
   }
 
-  // copy of current snake
-  let snakeCopy = snake.body;
+  let snakeCopy = JSON.parse(JSON.stringify(snake.body)); // deep copy
 
   // move head
   snake.body[0].x += snake.deltaX;
   snake.body[0].y += snake.deltaY;
 
   // move body parts
-  for (i = 1; i < snake.body.length; i++) {
+  for (let i = 1; i < snake.body.length; i++) {
     if (i === 1) {
       snake.body[i] = snakeCopy[0];
     } else {
@@ -188,7 +175,7 @@ function moveSnake() {
   }
 }
 
-// generates random interval of 20 between 0 and canvas width
+// Generates random interval of 20 between 0 and canvas.width/height
 function randomGridInterval(max) {
   return Math.floor(Math.random() * (max / 20)) * GRID_UNIT;
 }
