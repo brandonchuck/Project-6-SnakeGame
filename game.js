@@ -4,22 +4,32 @@ let canvasContext;
 
 let gameOver = false;
 
-// apple object with coordinates
 let apple = {
   posX: null,
   posY: null,
 };
 
-// snake object with its properties
 let snake = {
   deltaX: null,
   deltaY: null,
   direction: null,
   body: [
     { x: 380, y: 400 }, // head
-    { x: 360, y: 400 },
-    { x: 360, y: 400 },
-  ], // this will store x and y coordinates for drawing a snake body rect
+    // { x: 360, y: 400 },
+    // { x: 340, y: 400 },
+    // { x: 320, y: 400 },
+    // { x: 300, y: 400 },
+    // { x: 280, y: 400 },
+    // { x: 260, y: 400 },
+    // { x: 240, y: 400 },
+    // { x: 220, y: 400 },
+    // { x: 200, y: 400 },
+    // { x: 180, y: 400 },
+    // { x: 160, y: 400 },
+    // { x: 140, y: 400 },
+    // { x: 120, y: 400 },
+    // { x: 100, y: 400 },
+  ],
 };
 
 window.onload = function () {
@@ -72,9 +82,9 @@ window.onload = function () {
 };
 
 function drawEverything() {
-  // document.getElementById(
-  //   "scoreboard"
-  // ).textContent = `Score: ${snake.body.length}`;
+  document.getElementById(
+    "scoreboard"
+  ).textContent = `Score: ${snake.body.length}`;
   drawBoard();
   drawSnake();
   drawApple();
@@ -121,6 +131,18 @@ function drawApple() {
     apple.posX = randomGridInterval(canvas.width);
     apple.posY = randomGridInterval(canvas.height);
     drawRect(apple.posX, apple.posY, 20, 20, "red");
+
+    // add body piece
+    // Brainstorm: duplicate position of last piece in the body object
+    // if (snake.body.length === 1) {
+    //   return;
+    // } else {
+    //   return;
+    // }
+    // snake.body.push({
+    //   x: snake.body[-1].x,
+    //   y: snake.body[-1].y,
+    // });
   }
 
   drawRect(apple.posX, apple.posY, 20, 20, "red");
@@ -134,6 +156,16 @@ function moveEverything() {
 
   if (snake.body[0].x >= canvas.width || snake.body[0].x < 0) {
     resetGame();
+  }
+
+  // game over if head touches a body part
+  for (i = 1; i < snake.body.length; i++) {
+    if (
+      snake.body[0].x === snake.body[i].x &&
+      snake.body[0].y === snake.body[i].y
+    ) {
+      resetGame();
+    }
   }
 
   moveSnake();
@@ -188,5 +220,6 @@ function resetGame() {
   snake.body[0].y = canvas.height / 2;
   snake.deltaX = 20;
   snake.deltaY = 0;
+  snake.direction = "right";
   return;
 }
