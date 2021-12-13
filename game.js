@@ -4,9 +4,6 @@ let canvasContext;
 
 let gameOver = false;
 
-let lastPosX;
-let lastPosY;
-
 // apple object with coordinates
 let apple = {
   posX: null,
@@ -15,15 +12,13 @@ let apple = {
 
 // snake object with its properties
 let snake = {
-  posX: null,
-  posY: null,
-  speedX: null,
-  speedY: null,
+  deltaX: null,
+  deltaY: null,
   direction: null,
   body: [
+    { x: 400, y: 400 }, // head
     { x: 380, y: 400 },
     { x: 360, y: 400 },
-    { x: 340, y: 400 },
   ], // this will store x and y coordinates for drawing a snake body rect
 };
 
@@ -31,11 +26,7 @@ window.onload = function () {
   canvas = document.getElementById("canvas");
   canvasContext = canvas.getContext("2d");
 
-  // Initial snake position and speed
-  snake.posX = canvas.width / 2;
-  snake.posY = canvas.height / 2;
-  snake.speedX = 20;
-  snake.speedY = 0;
+  // Initial direction
   snake.direction = "right";
 
   apple.posX = randomGridInterval(canvas.width);
@@ -43,12 +34,37 @@ window.onload = function () {
 
   let framesPerSecond = 5;
 
-  console.log("Initial X Position: " + snake.posX);
-  console.log("Initial Y Position: " + snake.posY);
-  console.log("Body X: " + snake.body[0].x);
-  console.log("Body Y: " + snake.body[0].y);
+  console.log("Starting X: " + snake.body[0].x);
+  console.log("Starting Y: " + snake.body[0].y);
 
-  window.addEventListener("keydown", changeDirection);
+  document.onkeydown = (e) => {
+    e.preventDefault();
+
+    // UP -- prevents movement in opposite directions
+    if (e.key == "ArrowUp" && snake.direction !== "down") {
+      snake.direction = "up";
+      return;
+    }
+
+    // DOWN
+    if (e.key == "ArrowDown" && snake.direction !== "up") {
+      snake.direction = "down";
+      return;
+    }
+
+    // RIGHT
+    if (e.key === "ArrowRight" && snake.direction !== "left") {
+      snake.direction = "right";
+      return;
+    }
+
+    // LEFT
+    if (e.key === "ArrowLeft" && snake.direction !== "right") {
+      snake.direction = "left";
+      return;
+    }
+    console.log("Current Direction: " + snake.direction);
+  };
 
   setInterval(() => {
     drawEverything();
@@ -91,97 +107,84 @@ function drawRect(leftX, topY, width, height, color) {
 }
 
 function drawSnake() {
-  drawRect(snake.posX, snake.posY, 20, 20, "orange"); // draw head
-
-  // draw each body part
-  for (let i = 0; i < snake.body.length; i++) {
-    drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "green");
+  for (i = 0; i < snake.body.length; i++) {
+    drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "orange");
   }
 }
 
 function drawApple() {
-  if (snake.posX === apple.posX && snake.posY === apple.posY) {
+  if (snake.body[0].x === apple.posX && snake.body[0].y === apple.posY) {
     apple.posX = randomGridInterval(canvas.width);
     apple.posY = randomGridInterval(canvas.height);
-    console.log("---------- APPLE HIT----------");
-    snake.body.length++;
-
     drawRect(apple.posX, apple.posY, 20, 20, "red");
-
+    console.log("---------- APPLE HIT----------");
     console.log(JSON.stringify(snake.body));
   }
+
+  drawRect(apple.posX, apple.posY, 20, 20, "red");
 }
 
 // update x and y positions for head and body parts
 function moveEverything() {
-  if (snake.posY >= canvas.height || snake.posY < 0) {
+  if (snake.body[0].y >= canvas.height || snake.body[0].y < 0) {
     resetGame();
   }
 
-  if (snake.posX >= canvas.width || snake.posX < 0) {
+  if (snake.body[0].x >= canvas.width || snake.body[0].x < 0) {
     resetGame();
   }
 
-  // update position of each body part
-  if (snake.body) {
-    for (let i = 0; i < snake.body.length; i++) {
-      if (i === 0) {
-        snake.body[i].x = snake.posX;
-        snake.body[i].y = snake.posY;
-        // update remaining body parts
-      } else {
-        snake.body[i].x = snake.body[i - 1].x - snake.speedX;
-        snake.body[i].y = snake.body[i - 1].y - snake.speedY;
-      }
-    }
-  }
+  moveSnake();
 
-  // update head position every iteration
-  snake.posX += snake.speedX;
-  snake.posY += snake.speedY;
-  console.log("Head Position: " + "(" + snake.posX + ", " + snake.posY + ")");
-
-  //debug
-  for (i = 0; i < snake.body.length; i++) {
-    console.log(`Body X ${i + 1}: ${snake.body[i].x}`);
-    console.log(`Body Y ${i + 1}: ${snake.body[i].y}`);
-  }
+  // //debug
+  // for (i = 0; i < snake.body.length; i++) {
+  //   console.log(`Body X ${i + 1}: ${snake.body[i].x}`);
+  //   console.log(`Body Y ${i + 1}: ${snake.body[i].y}`);
+  // }
 }
 
-// Snake movement
-function changeDirection(e) {
-  // UP -- prevents movement in opposite directions
-  if (e.keyCode == 38 && snake.direction !== "down") {
-    snake.speedX = 0;
-    snake.speedY = -GRID_UNIT;
-    snake.direction = "up";
-    console.log("Current Direction: " + snake.direction);
+/*
+  1. Make copy of entire snake
+  2. Move head
+  3. loop through body parts
+  4. First body part gets head's position
+  5. Remaining body parts get the 
+*/
+
+function moveSnake() {
+  switch (snake.direction) {
+    case "up":
+      snake.deltaX = 0;
+      snake.deltaY = -GRID_UNIT;
+      break;
+    case "down":
+      snake.deltaX = 0;
+      snake.deltaY = GRID_UNIT;
+      break;
+    case "left":
+      snake.deltaX = -GRID_UNIT;
+      snake.deltaY = 0;
+      break;
+    case "right":
+      snake.deltaX = GRID_UNIT;
+      snake.deltaY = 0;
+      break;
   }
 
-  // DOWN
-  else if (e.keyCode == 40 && snake.direction !== "up") {
-    snake.speedX = 0;
-    snake.speedY = GRID_UNIT;
-    snake.direction = "down";
-    console.log("Current Direction: " + snake.direction);
-  }
+  // copy of current snake
+  let snakeCopy = snake.body;
 
-  // RIGHT
-  else if (e.keyCode === 39 && snake.direction !== "left") {
-    snake.speedX = GRID_UNIT;
-    snake.speedY = 0;
-    snake.direction = "right";
-    console.log("Current Direction: " + snake.direction);
-  }
+  // move head
+  snake.body[0].x += snake.deltaX;
+  snake.body[0].y += snake.deltaY;
 
-  // LEFT
-  else if (e.keyCode === 37 && snake.direction !== "right") {
-    snake.speedX = -GRID_UNIT;
-    snake.speedY = 0;
-    snake.direction = "left";
-    console.log("Current Direction: " + snake.direction);
-  } else {
-    return;
+  // move body parts
+  for (i = 1; i < snake.body.length; i++) {
+    if (i === 1) {
+      snake.body[i] = snakeCopy[0];
+    } else {
+      snake.body[i] = snakeCopy[i - 1];
+    }
   }
 }
 
@@ -194,9 +197,9 @@ function resetGame() {
   alert("game over!");
   gameOver = true;
   canvasContext.fillStyle = "red";
-  snake.posX = canvas.width / 2;
-  snake.posY = canvas.height / 2;
-  snake.speedX = 20;
-  snake.speedY = 0;
+  snake.body[0].x = canvas.width / 2;
+  snake.body[0].y = canvas.height / 2;
+  snake.deltaX = 20;
+  snake.deltaY = 0;
   return;
 }
