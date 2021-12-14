@@ -1,7 +1,7 @@
 const GRID_UNIT = 20;
+const FPS = 15;
 let canvas;
 let canvasContext;
-
 let gameOver = false;
 
 let apple = {
@@ -13,39 +13,21 @@ let snake = {
   deltaX: null,
   deltaY: null,
   direction: null,
-  body: [
-    { x: 380, y: 400 }, // head
-    // { x: 360, y: 400 },
-    // { x: 340, y: 400 },
-    // { x: 320, y: 400 },
-    // { x: 300, y: 400 },
-    // { x: 280, y: 400 },
-    // { x: 260, y: 400 },
-    // { x: 240, y: 400 },
-    // { x: 220, y: 400 },
-    // { x: 200, y: 400 },
-    // { x: 180, y: 400 },
-    // { x: 160, y: 400 },
-    // { x: 140, y: 400 },
-    // { x: 120, y: 400 },
-    // { x: 100, y: 400 },
-  ],
+  body: [],
 };
 
 window.onload = function () {
   canvas = document.getElementById("canvas");
   canvasContext = canvas.getContext("2d");
 
-  // Initial direction
+  snake.body.push({
+    x: canvas.width / 2,
+    y: canvas.height / 2,
+  });
   snake.direction = "right";
 
   apple.posX = randomGridInterval(canvas.width);
   apple.posY = randomGridInterval(canvas.height);
-
-  let framesPerSecond = 10;
-
-  console.log("Starting X: " + snake.body[0].x);
-  console.log("Starting Y: " + snake.body[0].y);
 
   document.onkeydown = (e) => {
     e.preventDefault();
@@ -78,13 +60,13 @@ window.onload = function () {
   setInterval(() => {
     drawEverything();
     moveEverything();
-  }, 1000 / framesPerSecond);
+  }, 1000 / FPS);
 };
 
 function drawEverything() {
-  document.getElementById(
-    "scoreboard"
-  ).textContent = `Score: ${snake.body.length}`;
+  document.getElementById("scoreboard").textContent = `Score: ${
+    snake.body.length - 1
+  }`;
   drawBoard();
   drawSnake();
   drawApple();
@@ -127,28 +109,21 @@ function drawSnake() {
 
 function drawApple() {
   if (snake.body[0].x === apple.posX && snake.body[0].y === apple.posY) {
-    // reposition apple
     apple.posX = randomGridInterval(canvas.width);
     apple.posY = randomGridInterval(canvas.height);
-    drawRect(apple.posX, apple.posY, 20, 20, "red");
 
-    // add body piece
-    // Brainstorm: duplicate position of last piece in the body object
-    // if (snake.body.length === 1) {
-    //   return;
-    // } else {
-    //   return;
-    // }
-    // snake.body.push({
-    //   x: snake.body[-1].x,
-    //   y: snake.body[-1].y,
-    // });
+    // add new body part
+    snake.body.push({
+      x: snake.body[snake.body.length - 1].x - snake.deltaX,
+      y: snake.body[snake.body.length - 1].y - snake.deltaY,
+    });
+
+    console.log(JSON.stringify(snake.body));
   }
 
   drawRect(apple.posX, apple.posY, 20, 20, "red");
 }
 
-// update x and y positions for head and body parts
 function moveEverything() {
   if (snake.body[0].y >= canvas.height || snake.body[0].y < 0) {
     resetGame();
@@ -158,7 +133,7 @@ function moveEverything() {
     resetGame();
   }
 
-  // game over if head touches a body part
+  // check if head touches body
   for (i = 1; i < snake.body.length; i++) {
     if (
       snake.body[0].x === snake.body[i].x &&
@@ -215,11 +190,15 @@ function randomGridInterval(max) {
 function resetGame() {
   alert("game over!");
   gameOver = true;
-  canvasContext.fillStyle = "red";
+
+  // clear snake body
+  snake.body.splice(1, snake.body.length - 1);
+
+  // reposition snake & apple
   snake.body[0].x = canvas.width / 2;
   snake.body[0].y = canvas.height / 2;
-  snake.deltaX = 20;
-  snake.deltaY = 0;
   snake.direction = "right";
+  apple.posX = randomGridInterval(canvas.width);
+  apple.posY = randomGridInterval(canvas.height);
   return;
 }
