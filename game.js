@@ -2,7 +2,6 @@ const GRID_UNIT = 20;
 const FPS = 15;
 let canvas;
 let canvasContext;
-let gameOver = false;
 
 let apple = {
   posX: null,
@@ -189,7 +188,6 @@ function randomGridInterval(max) {
 
 function resetGame() {
   alert("game over!");
-  gameOver = true;
 
   // clear snake body
   snake.body.splice(1, snake.body.length - 1);
