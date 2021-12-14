@@ -1,5 +1,5 @@
 const GRID_UNIT = 20;
-const FPS = 15;
+const FPS = 12;
 let canvas;
 let canvasContext;
 
@@ -97,17 +97,28 @@ function drawRect(leftX, topY, width, height, color) {
 }
 
 function drawSnake() {
+  let snakeColor;
   for (let i = 0; i < snake.body.length; i++) {
     if (i === 0) {
-      drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "orange");
+      snakeColor = "orange";
     } else {
-      drawRect(snake.body[i].x, snake.body[i].y, 20, 20, "green");
+      snakeColor = "green";
     }
+    drawRect(snake.body[i].x, snake.body[i].y, 20, 20, snakeColor);
   }
 }
 
+/*
+  1. Check if apple is in same position as snake head
+    - if so, give new x,y positions
+  2. Then, before drawing, check whether new apple coordinates are same as any snake body part's positions
+    - if so, generate new coordinates for apple
+  3. Finally, draw the apple with non-conflicting coordinates 
+*/
+
 function drawApple() {
   if (snake.body[0].x === apple.posX && snake.body[0].y === apple.posY) {
+    // reposition if snake head touches apple
     apple.posX = randomGridInterval(canvas.width);
     apple.posY = randomGridInterval(canvas.height);
 
@@ -120,7 +131,16 @@ function drawApple() {
     console.log(JSON.stringify(snake.body));
   }
 
-  drawRect(apple.posX, apple.posY, 20, 20, "red");
+  // Check if current apple positions same as snake positions
+  for (i = 0; i < snake.body.length; i++) {
+    // Reposition apple if current positions are same as snake positions
+    if (apple.posX === snake.body[i].x && apple.posY === snake.body[i].y) {
+      apple.posX = randomGridInterval(canvas.width);
+      apple.posY = randomGridInterval(canvas.height);
+    }
+    // Finally, draw the apple with non-conflicting positions
+    drawRect(apple.posX, apple.posY, 20, 20, "red");
+  }
 }
 
 function moveEverything() {
