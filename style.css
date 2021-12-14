@@ -1,0 +1,66 @@
+html,
+body {
+  overflow: hidden;
+}
+
+body {
+  background-color: rgb(151, 151, 151);
+  font-family: monospace;
+  margin: auto;
+}
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.canvas-container {
+  display: flex;
+  flex-direction: row;
+  margin-left: 550px;
+}
+
+.rules-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 50px;
+}
+
+.canvas {
+  display: flex;
+}
+
+#title {
+  display: flex;
+  font-size: 50pt;
+  color: green;
+  margin: 15px 0px;
+}
+
+#scoreboard {
+  display: flex;
+  margin-top: 15px;
+  font-size: 40pt;
+  color: rgb(223, 0, 0);
+}
+
+#rules-title {
+  display: flex;
+  font-size: 40pt;
+  color: rgb(43, 43, 43);
+  margin: 0;
+}
+
+#rules {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-left: 25px;
+  margin-top: 0px;
+}
+
+.rule {
+  padding: 10px;
+  font-size: 20px;
+}

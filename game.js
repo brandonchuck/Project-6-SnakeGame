@@ -23,7 +23,6 @@ window.onload = function () {
     x: canvas.width / 2,
     y: canvas.height / 2,
   });
-  snake.direction = "right";
 
   apple.posX = randomGridInterval(canvas.width);
   apple.posY = randomGridInterval(canvas.height);
@@ -72,10 +71,10 @@ function drawEverything() {
 }
 
 function drawBoard() {
-  drawRect(0, 0, canvas.width, canvas.height, "black");
+  drawRect(0, 0, canvas.width, canvas.height, "rgb(43, 43, 43)");
 
   for (let i = 0; i <= canvas.width; i += GRID_UNIT) {
-    canvasContext.strokeStyle = "white";
+    // canvasContext.strokeStyle = "smokewhite";
     canvasContext.beginPath();
     canvasContext.moveTo(i, 0);
     canvasContext.lineTo(i, canvas.height);
@@ -83,7 +82,7 @@ function drawBoard() {
   }
 
   for (let i = 0; i <= canvas.height; i += GRID_UNIT) {
-    canvasContext.strokeStyle = "white";
+    // canvasContext.strokeStyle = "smokewhite";
     canvasContext.beginPath();
     canvasContext.moveTo(0, i);
     canvasContext.lineTo(canvas.width, i);
@@ -100,9 +99,10 @@ function drawSnake() {
   let snakeColor;
   for (let i = 0; i < snake.body.length; i++) {
     if (i === 0) {
-      snakeColor = "orange";
-    } else {
       snakeColor = "green";
+    } else {
+      snakeColor = "rgb(250, 183, 0)";
+      // snakeColor = "darkgoldenrod";
     }
     drawRect(snake.body[i].x, snake.body[i].y, 20, 20, snakeColor);
   }
@@ -139,7 +139,7 @@ function drawApple() {
       apple.posY = randomGridInterval(canvas.height);
     }
     // Finally, draw the apple with non-conflicting positions
-    drawRect(apple.posX, apple.posY, 20, 20, "red");
+    drawRect(apple.posX, apple.posY, 20, 20, "rgb(223, 0, 0)");
   }
 }
 
@@ -207,7 +207,7 @@ function randomGridInterval(max) {
 }
 
 function resetGame() {
-  alert("game over!");
+  alert("Game over!");
 
   // clear snake body
   snake.body.splice(1, snake.body.length - 1);
@@ -215,7 +215,9 @@ function resetGame() {
   // reposition snake & apple
   snake.body[0].x = canvas.width / 2;
   snake.body[0].y = canvas.height / 2;
-  snake.direction = "right";
+  snake.direction = "";
+  snake.deltaX = 0;
+  snake.deltaY = 0;
   apple.posX = randomGridInterval(canvas.width);
   apple.posY = randomGridInterval(canvas.height);
   return;
