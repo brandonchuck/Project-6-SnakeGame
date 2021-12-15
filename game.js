@@ -29,7 +29,7 @@ window.onload = function () {
   document.onkeydown = (e) => {
     e.preventDefault();
 
-    // UP -- prevents movement in opposite directions
+    // UP -- prevents movement in opposite direction
     if (e.key == "ArrowUp" && snake.direction !== "down") {
       snake.direction = "up";
       return;
@@ -73,7 +73,6 @@ function drawBoard() {
   drawRect(0, 0, canvas.width, canvas.height, "rgb(43, 43, 43)");
 
   for (let i = 0; i <= canvas.width; i += GRID_UNIT) {
-    // canvasContext.strokeStyle = "smokewhite";
     canvasContext.beginPath();
     canvasContext.moveTo(i, 0);
     canvasContext.lineTo(i, canvas.height);
@@ -81,7 +80,6 @@ function drawBoard() {
   }
 
   for (let i = 0; i <= canvas.height; i += GRID_UNIT) {
-    // canvasContext.strokeStyle = "smokewhite";
     canvasContext.beginPath();
     canvasContext.moveTo(0, i);
     canvasContext.lineTo(canvas.width, i);
@@ -101,19 +99,10 @@ function drawSnake() {
       snakeColor = "green";
     } else {
       snakeColor = "rgb(250, 183, 0)";
-      // snakeColor = "darkgoldenrod";
     }
     drawRect(snake.body[i].x, snake.body[i].y, 20, 20, snakeColor);
   }
 }
-
-/*
-  1. Check if apple is in same position as snake head
-    - if so, give new x,y positions
-  2. Then, before drawing, check whether new apple coordinates are same as any snake body part's positions
-    - if so, generate new coordinates for apple
-  3. Finally, draw the apple with non-conflicting coordinates 
-*/
 
 function drawApple() {
   if (snake.body[0].x === apple.posX && snake.body[0].y === apple.posY) {
