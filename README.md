@@ -4,7 +4,7 @@
 
 - Retro Snake Game application built entirely with HTML, CSS, and Javascript.
 - Have fun playing the original snake game with all of the core functionality from the game we all know and love!
-- Utilized setInterval() and HTML <canvas> to create a retro snake game.
+- Utilized setInterval() and HTML \<canvas> to create a retro snake game.
 
 # Website
 
@@ -16,7 +16,8 @@
 
 # Summary
 
-This project allowed me to work on transforming user data into a tabular format for readability and organization. Displaying data in a tabular fashion is a tool used widely throughout the web and important for storing data and abstracting from it. At a surface level, we can extract simple patterns from having a record of our expenses and viewing them in tabular form. In a more technical manner, I enjoyed learning how to programatically generate new rows of data via user form submission.
+The classic snake game was a challenging project for my logic and problem solving skills. In order implement movement, I had to create an algorithm to move each individual piece of the snake, forcing me to take a step back and assess not only the essence of movement in the game, but also the best structure for my code. Using an array of objects with x and y positions was not the first implementation I attempted, but I eventually settled on this method being the most intuitive and cleanest way to center the core functionality around. Although this project helped me progress in several areas including algorithms, DOM manipulation, and game fundamentals, the most valuable skill was how important it is to step step back and think through problems before every touching the keyboard, which is an approach I continuosuly strive to include in all my future projects. At the end of the day, it feels great finishing a game project that reminded me of my childhood playing the snake game on a small flip phone and learning in the process.
+
 
 - Detailed Features:
     - Control snake head by pressing arrow keys.
