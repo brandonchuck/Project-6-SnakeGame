@@ -1,4 +1,4 @@
-# Project-6-SnakeGame
+# Retro Snake Game
 
 # Overview
 
