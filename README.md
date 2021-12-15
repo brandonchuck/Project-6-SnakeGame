@@ -8,7 +8,7 @@
 
 # Website
 
-- See it [here](https://brandonchuck.github.io/Project-6-SnakeGame/) on Github Pages! 
+- See it [here](https://brandonchuck.github.io/Retro-Snake-Game/) on Github Pages! 
 
 # Preview
 
