@@ -17,14 +17,15 @@ body {
 .canvas-container {
   display: flex;
   flex-direction: row;
-  margin-left: 550px;
+  margin-left: 500px;
 }
 
 .rules-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 50px;
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
 .canvas {
@@ -36,7 +37,7 @@ body {
   border-style: double;
   border-color: black;
   border-radius: 5px;
-  padding: 10px 10px;
+  padding: 10px 20px;
 }
 
 #title {

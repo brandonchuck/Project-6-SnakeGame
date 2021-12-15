@@ -1,5 +1,5 @@
 const GRID_UNIT = 20;
-const FPS = 12;
+const FPS = 5;
 let canvas;
 let canvasContext;
 
