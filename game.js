@@ -139,7 +139,7 @@ function drawApple() {
       apple.posY = randomGridInterval(canvas.height);
     }
     // Finally, draw the apple with non-conflicting positions
-    drawRect(apple.posX, apple.posY, 20, 20, "rgb(223, 0, 0)");
+    drawRect(apple.posX, apple.posY, 20, 20, "rgb(173, 0, 0)");
   }
 }
 

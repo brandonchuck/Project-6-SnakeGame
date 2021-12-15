@@ -29,27 +29,39 @@ body {
 
 .canvas {
   display: flex;
+  border-style: double;
+}
+
+.rules-border {
+  border-style: double;
+  border-color: black;
+  border-radius: 5px;
+  padding: 10px 10px;
 }
 
 #title {
+  border-style: double;
+  border-color: black;
+  border-radius: 5px;
   display: flex;
   font-size: 50pt;
   color: green;
-  margin: 15px 0px;
+  margin: 15px;
+  padding: 0px 15px;
 }
 
 #scoreboard {
   display: flex;
   margin-top: 15px;
   font-size: 40pt;
-  color: rgb(223, 0, 0);
+  color: rgb(173, 0, 0);
 }
 
 #rules-title {
+  color: rgb(43, 43, 43);
   display: flex;
   font-size: 40pt;
-  color: rgb(43, 43, 43);
-  margin: 0;
+  margin: 0px;
 }
 
 #rules {
@@ -61,6 +73,8 @@ body {
 }
 
 .rule {
+  color: rgb(43, 43, 43);
   padding: 10px;
   font-size: 20px;
+  font-weight: bolder;
 }
