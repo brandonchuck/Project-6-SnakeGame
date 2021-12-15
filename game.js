@@ -1,8 +1,7 @@
 const GRID_UNIT = 20;
-const FPS = 5;
+const FPS = 13;
 let canvas;
 let canvasContext;
-
 let apple = {
   posX: null,
   posY: null,
