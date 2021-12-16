@@ -23,8 +23,7 @@ window.onload = function () {
     y: canvas.height / 2,
   });
 
-  apple.posX = randomGridInterval(canvas.width);
-  apple.posY = randomGridInterval(canvas.height);
+  repositionApple();
 
   document.onkeydown = (e) => {
     e.preventDefault();
@@ -107,8 +106,7 @@ function drawSnake() {
 function drawApple() {
   if (snake.body[0].x === apple.posX && snake.body[0].y === apple.posY) {
     // reposition if snake head touches apple
-    apple.posX = randomGridInterval(canvas.width);
-    apple.posY = randomGridInterval(canvas.height);
+    repositionApple();
 
     // add new body part
     snake.body.push({
@@ -123,8 +121,7 @@ function drawApple() {
   for (i = 0; i < snake.body.length; i++) {
     // Reposition apple if current positions are same as snake positions
     if (apple.posX === snake.body[i].x && apple.posY === snake.body[i].y) {
-      apple.posX = randomGridInterval(canvas.width);
-      apple.posY = randomGridInterval(canvas.height);
+      repositionApple();
     }
     // Finally, draw the apple with non-conflicting positions
     drawRect(apple.posX, apple.posY, 20, 20, "rgb(173, 0, 0)");
@@ -190,8 +187,13 @@ function moveSnake() {
 }
 
 // Generates random interval of 20 between 0 and canvas.width/height
-function randomGridInterval(max) {
+function createRandomGridInterval(max) {
   return Math.floor(Math.random() * (max / 20)) * GRID_UNIT;
+}
+
+function repositionApple() {
+  apple.posX = createRandomGridInterval(canvas.width);
+  apple.posY = createRandomGridInterval(canvas.height);
 }
 
 function resetGame() {
@@ -206,7 +208,6 @@ function resetGame() {
   snake.direction = "";
   snake.deltaX = 0;
   snake.deltaY = 0;
-  apple.posX = randomGridInterval(canvas.width);
-  apple.posY = randomGridInterval(canvas.height);
+  repositionApple();
   return;
 }
