@@ -104,7 +104,10 @@ function drawSnake() {
 }
 
 function drawApple() {
-  if (snake.body[0].x === apple.posX && snake.body[0].y === apple.posY) {
+  let snakeTouchedApple =
+    snake.body[0].x === apple.posX && snake.body[0].y === apple.posY;
+
+  if (snakeTouchedApple) {
     // reposition if snake head touches apple
     repositionApple();
 
