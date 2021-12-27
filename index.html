@@ -5,28 +5,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <title>Document</title>
+    <title>BC | Retro Snake Game</title>
   </head>
   <body>
     <!-- Games Canvas -->
     <div class="game-container">
       <h1 id="title">RETRO SNAKE GAME</h1>
-      <div class="canvas-container">
-        <canvas class="canvas" id="canvas" width="800" height="800"></canvas>
-        <div class="rules-container">
-          <div class="rules-border">
-            <h1 id="rules-title">Rules:</h1>
-            <ol id="rules">
-              <li class="rule">Press an arrowkey to start moving.</li>
-              <li class="rule">Eat as many apples as you can.</li>
-              <li class="rule">Be careful, don't run into yourself...</li>
-              <li class="rule">Don't bump your head!</li>
-            </ol>
-          </div>
+      <div class="rules-container">
+        <div class="rules-border">
+          <h2 id="rules-title">Rules:</h2>
+          <ol id="rules">
+            <li class="rule">Press an arrowkey to start moving.</li>
+            <li class="rule">Eat as many apples as you can.</li>
+            <li class="rule">Be careful, don't run into yourself...</li>
+            <li class="rule">Don't bump your head!</li>
+          </ol>
         </div>
       </div>
+      <h3 id="scoreboard"></h3>
 
-      <h1 id="scoreboard"></h1>
+      <div class="canvas-container">
+        <canvas class="canvas" id="canvas" width="800" height="800"></canvas>
+      </div>
     </div>
 
     <script src="game.js"></script>

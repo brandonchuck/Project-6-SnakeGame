@@ -1,72 +1,34 @@
 const GRID_UNIT = 20;
 const FPS = 13;
-let canvas;
-let canvasContext;
+let canvas = document.getElementById("canvas");
+let canvasContext = canvas.getContext("2d");
+
 let apple = {
-  posX: null,
-  posY: null,
+  x: null,
+  y: null,
 };
 
 let snake = {
   deltaX: null,
   deltaY: null,
   direction: null,
-  body: [],
+  body: [{ x: 400, y: 400 }],
 };
 
 window.onload = function () {
-  canvas = document.getElementById("canvas");
-  canvasContext = canvas.getContext("2d");
-
-  snake.body.push({
-    x: canvas.width / 2,
-    y: canvas.height / 2,
-  });
-
-  repositionApple();
-
-  document.onkeydown = (e) => {
-    e.preventDefault();
-
-    // UP -- prevents movement in opposite direction
-    if (e.key == "ArrowUp" && snake.direction !== "down") {
-      snake.direction = "up";
-      return;
-    }
-
-    // DOWN
-    if (e.key == "ArrowDown" && snake.direction !== "up") {
-      snake.direction = "down";
-      return;
-    }
-
-    // RIGHT
-    if (e.key === "ArrowRight" && snake.direction !== "left") {
-      snake.direction = "right";
-      return;
-    }
-
-    // LEFT
-    if (e.key === "ArrowLeft" && snake.direction !== "right") {
-      snake.direction = "left";
-      return;
-    }
-  };
+  generateRandomApple();
+  changeSnakeDirection();
 
   setInterval(() => {
-    drawEverything();
-    moveEverything();
+    updateScore();
+    drawBoard();
+    drawSnake();
+    drawApple();
+    wallCheck();
+    bodyCheck();
+    moveSnake();
   }, 1000 / FPS);
 };
-
-function drawEverything() {
-  document.getElementById("scoreboard").textContent = `Score: ${
-    snake.body.length - 1
-  }`;
-  drawBoard();
-  drawSnake();
-  drawApple();
-}
 
 function drawBoard() {
   drawRect(0, 0, canvas.width, canvas.height, "rgb(43, 43, 43)");
@@ -91,56 +53,50 @@ function drawRect(leftX, topY, width, height, color) {
   canvasContext.fillRect(leftX, topY, width, height);
 }
 
-function drawSnake() {
-  let snakeColor;
-  for (let i = 0; i < snake.body.length; i++) {
-    if (i === 0) {
-      snakeColor = "green";
-    } else {
-      snakeColor = "rgb(250, 183, 0)";
-    }
-    drawRect(snake.body[i].x, snake.body[i].y, 20, 20, snakeColor);
-  }
-}
-
 function drawApple() {
   let snakeTouchedApple =
-    snake.body[0].x === apple.posX && snake.body[0].y === apple.posY;
+    snake.body[0].x === apple.x && snake.body[0].y === apple.y;
 
   if (snakeTouchedApple) {
-    // reposition if snake head touches apple
-    repositionApple();
-
-    // add new body part
-    snake.body.push({
-      x: snake.body[snake.body.length - 1].x - snake.deltaX,
-      y: snake.body[snake.body.length - 1].y - snake.deltaY,
-    });
-
-    console.log(JSON.stringify(snake.body));
+    generateRandomApple();
+    growSnake();
   }
 
-  // Check if current apple positions same as snake positions
   for (i = 0; i < snake.body.length; i++) {
-    // Reposition apple if current positions are same as snake positions
-    if (apple.posX === snake.body[i].x && apple.posY === snake.body[i].y) {
-      repositionApple();
+    if (apple.x === snake.body[i].x && apple.y === snake.body[i].y) {
+      generateRandomApple();
     }
-    // Finally, draw the apple with non-conflicting positions
-    drawRect(apple.posX, apple.posY, 20, 20, "rgb(173, 0, 0)");
+    drawRect(apple.x, apple.y, 20, 20, "rgb(173, 0, 0)");
   }
 }
 
-function moveEverything() {
-  if (snake.body[0].y >= canvas.height || snake.body[0].y < 0) {
+function drawSnake() {
+  let snakeColor;
+  snake.body.forEach((part, index) => {
+    index === 0 ? (snakeColor = "green") : (snakeColor = "rgb(250, 183, 0)");
+    drawRect(part.x, part.y, GRID_UNIT, GRID_UNIT, snakeColor);
+  });
+}
+
+function growSnake() {
+  snake.body.push({
+    x: snake.body[snake.body.length - 1].x - snake.deltaX,
+    y: snake.body[snake.body.length - 1].y - snake.deltaY,
+  });
+}
+
+function wallCheck() {
+  if (
+    snake.body[0].y >= canvas.height ||
+    snake.body[0].y < 0 ||
+    snake.body[0].x >= canvas.width ||
+    snake.body[0].x < 0
+  ) {
     resetGame();
   }
+}
 
-  if (snake.body[0].x >= canvas.width || snake.body[0].x < 0) {
-    resetGame();
-  }
-
-  // check if head touches body
+function bodyCheck() {
   for (i = 1; i < snake.body.length; i++) {
     if (
       snake.body[0].x === snake.body[i].x &&
@@ -149,8 +105,37 @@ function moveEverything() {
       resetGame();
     }
   }
+}
 
-  moveSnake();
+function changeSnakeDirection() {
+  document.onkeydown = (e) => {
+    e.preventDefault();
+
+    switch (e.key) {
+      case "ArrowUp":
+        if (snake.direction !== "down") {
+          snake.direction = "up";
+        }
+        break;
+      case "ArrowDown":
+        if (snake.direction !== "up") {
+          snake.direction = "down";
+        }
+        break;
+
+      case "ArrowRight":
+        if (snake.direction !== "left") {
+          snake.direction = "right";
+        }
+        break;
+
+      case "ArrowLeft":
+        if (snake.direction !== "right") {
+          snake.direction = "left";
+        }
+        break;
+    }
+  };
 }
 
 function moveSnake() {
@@ -175,11 +160,9 @@ function moveSnake() {
 
   let snakeCopy = JSON.parse(JSON.stringify(snake.body)); // deep copy
 
-  // move head
   snake.body[0].x += snake.deltaX;
   snake.body[0].y += snake.deltaY;
 
-  // move body parts
   for (let i = 1; i < snake.body.length; i++) {
     if (i === 1) {
       snake.body[i] = snakeCopy[0];
@@ -189,28 +172,28 @@ function moveSnake() {
   }
 }
 
-// Generates random interval of 20 between 0 and canvas.width/height
-function createRandomGridInterval(max) {
-  return Math.floor(Math.random() * (max / 20)) * GRID_UNIT;
+function generateRandomApple() {
+  apple.x = Math.floor(Math.random() * (canvas.width / 20)) * GRID_UNIT;
+  apple.y = Math.floor(Math.random() * (canvas.height / 20)) * GRID_UNIT;
 }
 
-function repositionApple() {
-  apple.posX = createRandomGridInterval(canvas.width);
-  apple.posY = createRandomGridInterval(canvas.height);
+function updateScore() {
+  const score = document.getElementById("scoreboard");
+  score.textContent = `Score: ${snake.body.length - 1}`;
 }
 
 function resetGame() {
-  alert("Game over!");
+  alert("Game Over!");
 
-  // clear snake body
   snake.body.splice(1, snake.body.length - 1);
 
-  // reposition snake & apple
-  snake.body[0].x = canvas.width / 2;
-  snake.body[0].y = canvas.height / 2;
-  snake.direction = "";
-  snake.deltaX = 0;
-  snake.deltaY = 0;
-  repositionApple();
+  snake = {
+    deltaX: null,
+    deltaY: null,
+    direction: null,
+    body: [{ x: 400, y: 400 }],
+  };
+
+  generateRandomApple();
   return;
 }

@@ -1,7 +1,7 @@
-html,
-body {
+/* html, */
+/* body {
   overflow: hidden;
-}
+} */
 
 body {
   background-color: rgb(151, 151, 151);
@@ -16,8 +16,7 @@ body {
 
 .canvas-container {
   display: flex;
-  flex-direction: row;
-  margin-left: 500px;
+  flex-direction: column;
 }
 
 .rules-container {
