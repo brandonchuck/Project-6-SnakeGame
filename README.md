@@ -30,4 +30,4 @@ The classic snake game was a challenging project for my logic and problem solvin
       - Increase or decrease speed by changing the FPS variable.
 # Author
 
-Brandon Chuck | Full Stack Developer | [LinkedIn](https://www.linkedin.com/in/brandonchuck/) | [Personal Website](www.brandonchuck-dev.com)
+Brandon Chuck | Full Stack Developer | [LinkedIn](https://www.linkedin.com/in/brandonchuck/) | [Personal Website](https://www.brandonchuck-dev.com)
