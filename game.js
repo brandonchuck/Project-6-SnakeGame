@@ -1,7 +1,9 @@
 const GRID_UNIT = 20;
-const FPS = 13;
-let canvas = document.getElementById("canvas");
-let canvasContext = canvas.getContext("2d");
+const canvas = document.getElementById("canvas");
+const canvasContext = canvas.getContext("2d");
+
+let speedAdjustButton = document.getElementById("speed-adjust-btn");
+let FPS;
 
 let apple = {
   x: null,
@@ -16,10 +18,16 @@ let snake = {
 };
 
 window.onload = function () {
+  // set current FPS to 13
+  speedAdjustButton.value = 45;
+  FPS = speedAdjustButton.value;
+
   generateRandomApple();
   changeSnakeDirection();
 
   setInterval(() => {
+    console.log(FPS); // show updated FPS
+    updateSpeed(); // this should be updating the value every second
     updateScore();
     drawBoard();
     drawSnake();
@@ -27,8 +35,12 @@ window.onload = function () {
     wallCheck();
     bodyCheck();
     moveSnake();
-  }, 1000 / FPS);
+  }, 1000 / FPS); // this value here is NOT being updated... only actually changes when I change the value of speedAdjustButton.value on line 22;
 };
+
+function updateSpeed() {
+  FPS = speedAdjustButton.value;
+}
 
 function drawBoard() {
   drawRect(0, 0, canvas.width, canvas.height, "rgb(43, 43, 43)");
