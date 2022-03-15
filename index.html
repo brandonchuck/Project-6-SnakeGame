@@ -8,10 +8,17 @@
     <title>BC | Retro Snake Game</title>
   </head>
   <body>
-    <!-- Games Canvas -->
+    <!-- Games Container -->
     <div class="game-container">
-      <h1 id="title">RETRO SNAKE GAME</h1>
+      <!-- Canvas Container-->
+      <div class="canvas-container">
+        <h1 id="title">RETRO SNAKE GAME</h1>
+        <canvas class="canvas" id="canvas" width="700" height="700"></canvas>
+      </div>
+
       <div class="rules-container">
+        <!-- Scoreboard -->
+        <h3 id="scoreboard"></h3>
         <div class="rules-border">
           <h2 id="rules-title">Rules:</h2>
           <ol id="rules">
@@ -21,11 +28,6 @@
             <li class="rule">Don't bump your head!</li>
           </ol>
         </div>
-      </div>
-      <h3 id="scoreboard"></h3>
-
-      <div class="canvas-container">
-        <canvas class="canvas" id="canvas" width="800" height="800"></canvas>
       </div>
     </div>
 
