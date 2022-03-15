@@ -3,11 +3,13 @@ const FPS = 13;
 let canvas = document.getElementById("canvas");
 let canvasContext = canvas.getContext("2d");
 
+// initial apple coordinates
 let apple = {
   x: null,
   y: null,
 };
 
+// initial snake direction, speed, and coordinates
 let snake = {
   deltaX: null,
   deltaY: null,
@@ -33,6 +35,7 @@ window.onload = function () {
 function drawBoard() {
   drawRect(0, 0, canvas.width, canvas.height, "rgb(43, 43, 43)");
 
+  // draw vertical grid lines
   for (let i = 0; i <= canvas.width; i += GRID_UNIT) {
     canvasContext.beginPath();
     canvasContext.moveTo(i, 0);
@@ -40,6 +43,7 @@ function drawBoard() {
     canvasContext.stroke();
   }
 
+  // draw horizontal grid lines
   for (let i = 0; i <= canvas.height; i += GRID_UNIT) {
     canvasContext.beginPath();
     canvasContext.moveTo(0, i);
@@ -80,7 +84,7 @@ function drawSnake() {
 
 function growSnake() {
   snake.body.push({
-    x: snake.body[snake.body.length - 1].x - snake.deltaX,
+    x: snake.body[snake.body.length - 1].x - snake.deltaX, // add new body part coordinates {x:, y:} as the previous position of last body part
     y: snake.body[snake.body.length - 1].y - snake.deltaY,
   });
 }
@@ -96,6 +100,7 @@ function wallCheck() {
   }
 }
 
+// check if snake hit itself
 function bodyCheck() {
   for (i = 1; i < snake.body.length; i++) {
     if (
@@ -160,9 +165,11 @@ function moveSnake() {
 
   let snakeCopy = JSON.parse(JSON.stringify(snake.body)); // deep copy
 
+  // move snake head
   snake.body[0].x += snake.deltaX;
   snake.body[0].y += snake.deltaY;
 
+  // sequentially move body parts
   for (let i = 1; i < snake.body.length; i++) {
     if (i === 1) {
       snake.body[i] = snakeCopy[0];
@@ -185,6 +192,7 @@ function updateScore() {
 function resetGame() {
   alert("Game Over!");
 
+  // remove all body parts except the head
   snake.body.splice(1, snake.body.length - 1);
 
   snake = {
